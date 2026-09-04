@@ -1,0 +1,17 @@
+{
+  "slug": "interstellar",
+  "title": "Interstellar",
+  "type": "movie",
+  "year": 2014,
+  "poster": "/images/posters/interstellar.jpg",
+  "backdrop": "/images/backdrops/interstellar.jpg",
+  "description": "When Earth becomes uninhabitable, an ex-NASA pilot leads an interstellar voyage through a wormhole to find humanity a new home.",
+  "genres": ["Adventure", "Drama", "Sci-Fi"],
+  "rating": 8.7,
+  "runtime": 169,
+  "director": "Christopher Nolan",
+  "cast": ["Matthew McConaughey", "Anne Hathaway", "Jessica Chastain"],
+  "featured": true,
+  "trending": true,
+  "popular": true
+}

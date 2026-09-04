@@ -1,0 +1,53 @@
+interface Env {
+  OGADS_API_KEY: string;
+}
+
+interface EventContext {
+  request: Request;
+  env: Env;
+}
+
+export const onRequestGet = async (context: EventContext): Promise<Response> => {
+  const apiKey = context.env.OGADS_API_KEY;
+
+  if (!apiKey) {
+    return new Response(
+      JSON.stringify({ error: 'Server error: OGADS_API_KEY not configured in Cloudflare' }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+
+  // Cloudflare edge headers provide visitor IP and device details
+  const clientIp = context.request.headers.get('cf-connecting-ip') || '';
+  const userAgent = context.request.headers.get('user-agent') || '';
+
+  try {
+    const targetUrl = `https://unlockers.org/api/v2/offers?api_key=${apiKey}&ip=${clientIp}&user_agent=${encodeURIComponent(userAgent)}`;
+
+    const ogResponse = await fetch(targetUrl);
+    if (!ogResponse.ok) {
+      throw new Error(`OGAds responded with status: ${ogResponse.status}`);
+    }
+
+    const data = await ogResponse.json();
+
+    return new Response(JSON.stringify(data), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-store'
+      }
+    });
+  } catch (err: any) {
+    return new Response(
+      JSON.stringify({ error: err.message || 'Failed to fetch offers' }),
+      {
+        status: 502,
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+  }
+};
