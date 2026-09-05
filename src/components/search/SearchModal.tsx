@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { getAllMedia } from '../../lib/movies';
+import { getAllMovies } from '../../lib/movies';
 import type { MediaItem } from '../../types/movie';
 import { SearchIcon, StarIcon } from '../ui/Icons';
 
@@ -22,14 +22,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
       return;
     }
 
-    const all = getAllMedia();
+    const all = getAllMovies();
     const q = query.toLowerCase();
     const filtered = all.filter(
-      item =>
+      (item: MediaItem) =>
         item.title.toLowerCase().includes(q) ||
-        item.genres.some(g => g.toLowerCase().includes(q)) ||
+        item.genres.some((g: string) => g.toLowerCase().includes(q)) ||
         (item.director && item.director.toLowerCase().includes(q)) ||
-        (item.cast && item.cast.some(c => c.toLowerCase().includes(q)))
+        (item.cast && item.cast.some((c: string) => c.toLowerCase().includes(q)))
     );
     setResults(filtered);
   }, [query]);
