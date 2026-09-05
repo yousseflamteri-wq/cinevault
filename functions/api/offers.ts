@@ -25,16 +25,30 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
   const userAgent = context.request.headers.get('user-agent') || '';
 
   try {
-    const targetUrl = `https://unlockers.org/api/v2/offers?api_key=${apiKey}&ip=${clientIp}&user_agent=${encodeURIComponent(userAgent)}`;
+    const params = new URLSearchParams({
+      ip: clientIp,
+      user_agent: userAgent
+    });
 
-    const ogResponse = await fetch(targetUrl);
+    const targetUrl = `https://appsave.store/api/v2?${params.toString()}`;
+
+    const ogResponse = await fetch(targetUrl, {
+      headers: {
+        Authorization: `Bearer ${apiKey}`
+      }
+    });
+
     if (!ogResponse.ok) {
       throw new Error(`OGAds responded with status: ${ogResponse.status}`);
     }
 
-    const data = await ogResponse.json();
+    const data: any = await ogResponse.json();
 
-    return new Response(JSON.stringify(data), {
+    if (!data.success) {
+      throw new Error(data.error || 'OGAds API returned an unsuccessful response');
+    }
+
+    return new Response(JSON.stringify({ offers: data.offers }), {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
