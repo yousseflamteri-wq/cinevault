@@ -16,4 +16,5 @@ export interface Movie {
   trending?: boolean;
   popular?: boolean;
 }
+
 export type MediaItem = Movie;
