@@ -23,45 +23,32 @@ export const WatchUnlockModal: React.FC<WatchUnlockModalProps> = ({
 }) => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen) return;
 
     setLoading(true);
+    setError(null);
+    setOffers([]);
+
     fetch('/api/offers')
-      .then(res => res.json())
+      .then(async res => {
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || `Request failed with status ${res.status}`);
+        }
+        return data;
+      })
       .then(data => {
-        if (data.offers && Array.isArray(data.offers)) {
+        if (data.offers && Array.isArray(data.offers) && data.offers.length > 0) {
           setOffers(data.offers.slice(0, 4));
         } else {
-          setOffers([
-            {
-              offer_id: '1',
-              name_short: 'Fast Verification',
-              adcopy: 'Install & open app for 30s to unlock stream',
-              picture: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=80&q=80',
-              link: '#'
-            },
-            {
-              offer_id: '2',
-              name_short: 'Quick Survey',
-              adcopy: 'Answer 3 questions to verify stream access',
-              picture: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=80&q=80',
-              link: '#'
-            }
-          ]);
+          setError('No offers are currently available for your location or device.');
         }
       })
-      .catch(() => {
-        setOffers([
-          {
-            offer_id: '1',
-            name_short: 'Quick Verification',
-            adcopy: 'Complete one free sponsor task below to continue',
-            picture: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=80&q=80',
-            link: '#'
-          }
-        ]);
+      .catch((err: Error) => {
+        setError(err.message || 'Failed to load offers.');
       })
       .finally(() => setLoading(false));
   }, [isOpen]);
@@ -146,6 +133,20 @@ export const WatchUnlockModal: React.FC<WatchUnlockModalProps> = ({
             {loading ? (
               <div style={{ padding: '24px', textAlign: 'center', color: '#717686', fontSize: '0.875rem' }}>
                 Loading available tasks...
+              </div>
+            ) : error ? (
+              <div
+                style={{
+                  padding: '20px',
+                  textAlign: 'center',
+                  color: '#f87171',
+                  fontSize: '0.85rem',
+                  backgroundColor: 'rgba(248, 113, 113, 0.08)',
+                  border: '1px solid rgba(248, 113, 113, 0.25)',
+                  borderRadius: '10px'
+                }}
+              >
+                {error}
               </div>
             ) : (
               offers.map(offer => (
