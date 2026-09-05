@@ -9,19 +9,24 @@ export const movies: Movie[] = [
   dune as Movie,
 ];
 
-export async function getAllMovies(): Promise<Movie[]> {
-  try {
-    const res = await fetch('/api/movies');
-    if (!res.ok) return movies;
-    const data = await res.json();
-    return Array.isArray(data) && data.length > 0 ? data : movies;
-  } catch {
-    return movies;
-  }
+export const catalog: Movie[] = movies;
+
+export function getAllMovies(): Movie[] {
+  return movies;
 }
 
 export async function getMovieBySlug(slug: string): Promise<Movie | undefined> {
-  const allMovies = await getAllMovies();
-  return allMovies.find((m) => m.slug === slug);
+  try {
+    const res = await fetch('/api/movies');
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const found = data.find((m: Movie) => m.slug === slug);
+        if (found) return found;
+      }
+    }
+  } catch {
+    // Fallback to local files if offline or API is unreachable
+  }
+  return movies.find((m) => m.slug === slug);
 }
-export const catalog = movies;
