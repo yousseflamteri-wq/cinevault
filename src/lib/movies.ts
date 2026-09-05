@@ -26,7 +26,7 @@ export async function getMovieBySlug(slug: string): Promise<Movie | undefined> {
       }
     }
   } catch {
-    // Fallback to local files if offline or API is unreachable
+    // Fallback to local files
   }
   return movies.find((m) => m.slug === slug);
 }
