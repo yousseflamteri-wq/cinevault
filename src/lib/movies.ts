@@ -1,49 +1,31 @@
-import type { MediaItem } from '../types/movie';
-import { validateMediaItem } from './validation';
+import { Movie } from '../types/movie';
+import interstellar from '../data/movies/interstellar.json';
+import inception from '../data/movies/inception.json';
+import dune from '../data/movies/dune-part-two.json';
 
-const movieModules = import.meta.glob('../data/movies/*.json', {
-  eager: true,
-  import: 'default'
-}) as Record<string, unknown>;
+const fallbackMovies: Movie[] = [
+  interstellar as Movie,
+  inception as Movie,
+  dune as Movie,
+];
 
-const tvModules = import.meta.glob('../data/tv/*.json', {
-  eager: true,
-  import: 'default'
-}) as Record<string, unknown>;
-
-function loadCatalog(): MediaItem[] {
-  const items: MediaItem[] = [];
-
-  for (const [path, content] of Object.entries(movieModules)) {
-    try {
-      items.push(validateMediaItem(path, content));
-    } catch (err) {
-      console.error(err);
+export async function getAllMovies(): Promise<Movie[]> {
+  try {
+    const response = await fetch('/api/movies');
+    if (!response.ok) {
+      throw new Error(`API responded with ${response.status}`);
     }
-  }
-
-  for (const [path, content] of Object.entries(tvModules)) {
-    try {
-      items.push(validateMediaItem(path, content));
-    } catch (err) {
-      console.error(err);
+    const data = await response.json();
+    if (Array.isArray(data) && data.length > 0) {
+      return data;
     }
+    return fallbackMovies;
+  } catch {
+    return fallbackMovies;
   }
-
-  return items;
 }
 
-export const catalog: MediaItem[] = loadCatalog();
-
-export const getAllMedia = (): MediaItem[] => [...catalog];
-
-export const getMediaBySlug = (slug: string): MediaItem | undefined => {
-  return catalog.find(item => item.slug === slug);
-};
-
-export const getSimilarMedia = (current: MediaItem, limit = 4): MediaItem[] => {
-  return catalog
-    .filter(item => item.slug !== current.slug)
-    .filter(item => item.genres.some((g: string) => current.genres.includes(g)))
-    .slice(0, limit);
-};
+export async function getMovieBySlug(slug: string): Promise<Movie | undefined> {
+  const movies = await getAllMovies();
+  return movies.find((m) => m.slug === slug);
+}
