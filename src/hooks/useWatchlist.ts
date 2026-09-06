@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { catalog } from '../lib/movies';
-import type { MediaItem } from '../types/movie';
+import { movies } from '../lib/movies';
+import type { Movie } from '../types/movie';
 
 const STORAGE_KEY = 'cinevault_watchlist';
 
@@ -33,7 +33,7 @@ export function useWatchlist() {
     );
   }, []);
 
-  const items: MediaItem[] = catalog.filter(m => watchlistSlugs.includes(m.slug));
+  const items: Movie[] = movies.filter((m) => watchlistSlugs.includes(m.slug));
 
   return {
     items,
