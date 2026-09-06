@@ -1,0 +1,17 @@
+{
+  "slug": "the-batman-part-ii",
+  "title": "The Batman - Part II",
+  "type": "movie",
+  "year": 2026,
+  "poster": "/images/posters/the-batman-part-ii.jpg",
+  "backdrop": "/images/backdrops/the-batman-part-ii.jpg",
+  "description": "Bruce Wayne plunges deeper into Gotham's criminal underworld as a new psychological threat challenges his role as the city's protector.",
+  "genres": ["Crime", "Action", "Drama"],
+  "rating": 0,
+  "runtime": 150,
+  "director": "Matt Reeves",
+  "cast": ["Robert Pattinson", "Andy Serkis", "Colin Farrell"],
+  "featured": true,
+  "trending": true,
+  "popular": true
+}
