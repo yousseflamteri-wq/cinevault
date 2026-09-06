@@ -1,0 +1,17 @@
+{
+  "slug": "wake-up-dead-man",
+  "title": "Wake Up Dead Man: A Knives Out Mystery",
+  "type": "movie",
+  "year": 2025,
+  "poster": "/images/posters/wake-up-dead-man.jpg",
+  "backdrop": "/images/backdrops/wake-up-dead-man.jpg",
+  "description": "Detective Benoit Blanc returns to solve a new, highly complex murder mystery featuring a colorful cast of suspects.",
+  "genres": ["Crime", "Drama", "Mystery"],
+  "rating": 0,
+  "runtime": 130,
+  "director": "Rian Johnson",
+  "cast": ["Daniel Craig", "Josh O'Connor", "Cailee Spaeny"],
+  "featured": false,
+  "trending": true,
+  "popular": true
+}
