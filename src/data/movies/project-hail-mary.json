@@ -1,0 +1,17 @@
+{
+  "slug": "project-hail-mary",
+  "title": "Project Hail Mary",
+  "type": "movie",
+  "year": 2026,
+  "poster": "/images/posters/project-hail-mary.jpg",
+  "backdrop": "/images/backdrops/project-hail-mary.jpg",
+  "description": "A lone astronaut must save humanity from an extinction-level event, relying on his scientific ingenuity and an unexpected alien ally.",
+  "genres": ["Sci-Fi", "Drama", "Thriller"],
+  "rating": 0,
+  "runtime": 135,
+  "director": "Phil Lord, Christopher Miller",
+  "cast": ["Ryan Gosling", "Sandra Hüller"],
+  "featured": true,
+  "trending": true,
+  "popular": true
+}
