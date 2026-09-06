@@ -1,0 +1,8 @@
+name = "cinevault"
+compatibility_date = "2024-09-23"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cinevault-db"
+database_id = "d0d36357-4138-4b0d-8902-c856a9c9fd21"
