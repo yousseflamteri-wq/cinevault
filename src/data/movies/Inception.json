@@ -3,7 +3,7 @@
   "title": "Inception",
   "type": "movie",
   "year": 2010,
-  "poster": "/images/posters/inception.jpg",
+  "poster": "/images/posters/inception.webp",
   "backdrop": "/images/backdrops/inception.jpg",
   "description": "A thief who steals corporate secrets through dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
   "genres": ["Action", "Adventure", "Sci-Fi"],
