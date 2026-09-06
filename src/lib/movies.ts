@@ -1,22 +1,15 @@
 import type { Movie } from '../types/movie';
-import interstellar from '../data/movies/interstellar.json';
-import inception from '../data/movies/inception.json';
-import dunePartTwo from '../data/movies/dune-part-two.json';
-import dunePartOne from '../data/movies/dune-part-one.json';
-import projectHailMary from '../data/movies/project-hail-mary.json';
-import wakeUpDeadMan from '../data/movies/wake-up-dead-man.json';
-import theBatmanPartIi from '../data/movies/the-batman-part-ii.json';
 
-// Base movie array from local JSON
-export const movies: Movie[] = [
-  interstellar as Movie,
-  inception as Movie,
-  dunePartTwo as Movie,
-  dunePartOne as Movie,
-  projectHailMary as Movie,
-  wakeUpDeadMan as Movie,
-  theBatmanPartIi as Movie,
-];
+// Dynamically import every .json file under src/data/movies/ at build time.
+// eager: true inlines the JSON content directly (no async chunks needed),
+// so this behaves exactly like the old static imports but with zero
+// per-file maintenance -- just drop a new .json file in the folder.
+const movieModules = import.meta.glob('../data/movies/*.json', { eager: true });
+
+// Each module's default export is the JSON content, typed as Movie.
+export const movies: Movie[] = Object.values(movieModules).map(
+  (mod) => (mod as { default: Movie }).default
+);
 
 // Alias export to prevent useWatchlist.ts from breaking
 export const catalog: Movie[] = movies;
@@ -33,24 +26,44 @@ export function getAllMedia(): Movie[] {
 
 // Asynchronous fetcher for MediaDetails.tsx targeting the Cloudflare D1 API
 export async function getMovieBySlug(slug: string): Promise<Movie | undefined> {
+  const localMatch = movies.find((m) => m.slug === slug);
+
   try {
     const res = await fetch('/api/movies');
     if (res.ok) {
-      const data = await res.json();
+      const data: unknown = await res.json();
       if (Array.isArray(data) && data.length > 0) {
-        // Format the database strings back into arrays
-        const formattedData = data.map((m: any) => ({
-          ...m,
-          genres: typeof m.genres === 'string' ? JSON.parse(m.genres) : m.genres,
-          cast: typeof m.cast === 'string' ? JSON.parse(m.cast) : m.cast
-        }));
+        const rawMatch = data.find(
+          (m) => (m as Record<string, unknown>).slug === slug
+        );
 
-        const found = formattedData.find((m: Movie) => m.slug === slug);
-        if (found) return found;
+        if (rawMatch) {
+          try {
+            const record = rawMatch as Record<string, unknown>;
+            const formatted: Movie = {
+              ...(record as unknown as Movie),
+              genres:
+                typeof record.genres === 'string'
+                  ? (JSON.parse(record.genres) as string[])
+                  : (record.genres as string[]),
+              cast:
+                typeof record.cast === 'string'
+                  ? (JSON.parse(record.cast) as string[])
+                  : (record.cast as string[])
+            };
+            return formatted;
+          } catch {
+            // This D1 row is malformed (e.g. bad JSON in genres/cast).
+            // Don't let one bad record break the whole page -- use the
+            // local JSON version of this movie if we have one.
+            if (localMatch) return localMatch;
+          }
+        }
       }
     }
   } catch {
-    // Fallback to local files if the API is offline or unreachable
+    // API unreachable/offline -- fall back to local files below.
   }
-  return movies.find((m) => m.slug === slug);
+
+  return localMatch;
 }
