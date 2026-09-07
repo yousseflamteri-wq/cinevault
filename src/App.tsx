@@ -17,7 +17,9 @@ const GENRES = [
   'Romance',
   'War',
   'Thriller',
-  'Animation'
+  'Animation',
+  'Superhero',
+  'Mystery'
 ];
 
 function HomePage() {
@@ -51,18 +53,32 @@ function HomePage() {
           <>
             <MovieRow
               title="Trending Movies"
-              items={allMedia}
+              items={allMedia.filter(m => m.trending)}
               subtitle="Popular titles compiled from Git records"
             />
             <MovieRow
               title="Highest Rated"
-              items={[...allMedia].sort((a, b) => b.rating - a.rating)}
+              items={[...allMedia]
+                .filter(m => m.rating > 0)
+                .sort((a, b) => b.rating - a.rating)
+                .slice(0, 10)}
               subtitle="Critically acclaimed cinema"
             />
             <MovieRow
-              title="Sci-Fi Explorations"
-              items={allMedia.filter(m => m.genres.includes('Sci-Fi'))}
-              subtitle="Space and mind-bending narratives"
+              title="Superhero Movies"
+              items={allMedia
+                .filter(m => m.genres.includes('Superhero'))
+                .sort((a, b) => b.year - a.year)
+                .slice(0, 10)}
+              subtitle="Heroes, villains, and everything in between"
+            />
+            <MovieRow
+              title="Drama Movies"
+              items={allMedia
+                .filter(m => m.genres.includes('Drama'))
+                .sort((a, b) => b.year - a.year)
+                .slice(0, 10)}
+              subtitle="Powerful stories and performances"
             />
           </>
         ) : (
