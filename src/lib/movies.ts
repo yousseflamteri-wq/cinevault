@@ -7,9 +7,32 @@ import type { Movie } from '../types/movie';
 const movieModules = import.meta.glob('../data/movies/*.json', { eager: true });
 
 // Each module's default export is the JSON content, typed as Movie.
-export const movies: Movie[] = Object.values(movieModules).map(
+const rawMovies: Movie[] = Object.values(movieModules).map(
   (mod) => (mod as { default: Movie }).default
 );
+
+// How many titles count as "trending" at any given time.
+const TRENDING_COUNT = 10;
+
+// Automatically mark the N most recent titles as trending, based on
+// release year (ties broken alphabetically by slug for stable ordering).
+// This replaces hand-editing "trending": true/false in each JSON file --
+// as newer movies are added, older ones fall out of the top N on their own.
+function withComputedTrending(list: Movie[]): Movie[] {
+  const newestFirst = [...list].sort((a, b) => {
+    if (b.year !== a.year) return b.year - a.year;
+    return a.slug.localeCompare(b.slug);
+  });
+
+  const trendingSlugs = new Set(newestFirst.slice(0, TRENDING_COUNT).map((m) => m.slug));
+
+  return list.map((m) => ({
+    ...m,
+    trending: trendingSlugs.has(m.slug)
+  }));
+}
+
+export const movies: Movie[] = withComputedTrending(rawMovies);
 
 // Alias export to prevent useWatchlist.ts from breaking
 export const catalog: Movie[] = movies;
