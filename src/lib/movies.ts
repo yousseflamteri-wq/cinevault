@@ -11,24 +11,16 @@ const rawMovies: Movie[] = Object.values(movieModules).map(
   (mod) => (mod as { default: Movie }).default
 );
 
-// How many titles count as "trending" at any given time.
-const TRENDING_COUNT = 10;
-
-// Automatically mark the N most recent titles as trending, based on
-// release year (ties broken alphabetically by slug for stable ordering).
+// Automatically mark titles released in the current year as trending.
 // This replaces hand-editing "trending": true/false in each JSON file --
-// as newer movies are added, older ones fall out of the top N on their own.
+// as the calendar year changes, last year's releases stop being trending
+// on their own, with no file to touch.
 function withComputedTrending(list: Movie[]): Movie[] {
-  const newestFirst = [...list].sort((a, b) => {
-    if (b.year !== a.year) return b.year - a.year;
-    return a.slug.localeCompare(b.slug);
-  });
-
-  const trendingSlugs = new Set(newestFirst.slice(0, TRENDING_COUNT).map((m) => m.slug));
+  const currentYear = new Date().getFullYear();
 
   return list.map((m) => ({
     ...m,
-    trending: trendingSlugs.has(m.slug)
+    trending: m.year === currentYear
   }));
 }
 
