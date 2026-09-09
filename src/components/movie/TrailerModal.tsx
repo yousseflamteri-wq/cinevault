@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 interface TrailerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  trailerId?: string;
+  trailerId?: string; 
   movieTitle: string;
   movieYear?: number;
 }
