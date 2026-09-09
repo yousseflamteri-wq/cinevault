@@ -1,0 +1,17 @@
+{
+  "slug": "the-odyssey",
+  "title": "The Odyssey",
+  "type": "movie",
+  "year": 2026,
+  "poster": "/images/posters/the-odyssey.jpg",
+  "backdrop": "/images/backdrops/the-odyssey.jpg",
+  "description": "Following the fall of Troy, Odysseus embarks on a perilous decade-long journey home across mythical seas, braving monstrous creatures and vengeful gods to reclaim his kingdom.",
+  "genres": ["Action", "Adventure", "Fantasy"],
+  "rating": 9.1,
+  "runtime": 165,
+  "director": "Christopher Nolan",
+  "cast": ["Cillian Murphy", "Charlize Theron", "Tom Hardy"],
+  "featured": true,
+  "trending": true,
+  "popular": true
+}
