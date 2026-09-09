@@ -298,8 +298,9 @@ export const MediaDetails = () => {
       <TrailerModal
         isOpen={trailerOpen}
         onClose={() => setTrailerOpen(false)}
-        slug={movie.slug}
+        trailerId={movie.trailerId}
         movieTitle={movie.title}
+        movieYear={movie.year}
       />
       <WatchUnlockModal isOpen={unlockOpen} onClose={() => setUnlockOpen(false)} movieTitle={movie.title} />
     </div>
