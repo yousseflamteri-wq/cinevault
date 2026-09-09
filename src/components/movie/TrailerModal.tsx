@@ -5,7 +5,7 @@ interface TrailerModalProps {
   isOpen: boolean;
   onClose: () => void;
   trailerId?: string; 
-  movieTitle: string;
+  movieTitle: string; 
   movieYear?: number;
 }
 
