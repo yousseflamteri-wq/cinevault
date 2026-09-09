@@ -1,26 +1,33 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface TrailerModalProps {
   isOpen: boolean;
   onClose: () => void;
-  slug: string;
+  trailerId?: string;
   movieTitle: string;
+  movieYear?: number;
 }
 
-// Direct YouTube trailer IDs
-const TRAILERS: Record<string, string> = {
-  'dune-part-two': 'Way9Dexny3w',
-  'inception': 'YoHD9XEInc0',
-  'interstellar': 'zSWdZVtXT7E'
-};
+// Simple in-memory cache so re-opening the same movie's trailer during
+// the same page visit never calls the API twice. sessionStorage backs
+// it up across the tab's lifetime (cleared when the tab closes).
+const trailerCache = new Map<string, string | null>();
+
+function getCacheKey(title: string, year?: number) {
+  return `${title}::${year ?? ''}`;
+}
 
 export const TrailerModal: React.FC<TrailerModalProps> = ({
   isOpen,
   onClose,
-  slug,
-  movieTitle
+  trailerId,
+  movieTitle,
+  movieYear
 }) => {
+  const [resolvedId, setResolvedId] = useState<string | null>(trailerId ?? null);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -35,12 +42,62 @@ export const TrailerModal: React.FC<TrailerModalProps> = ({
     };
   }, [isOpen, onClose]);
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    // If this movie already has a trailerId hardcoded in its JSON,
+    // use it directly -- no API call needed.
+    if (trailerId) {
+      setResolvedId(trailerId);
+      return;
+    }
+
+    const cacheKey = getCacheKey(movieTitle, movieYear);
+
+    // Check in-memory cache first, then sessionStorage
+    if (trailerCache.has(cacheKey)) {
+      const cached = trailerCache.get(cacheKey) ?? null;
+      setResolvedId(cached);
+      return;
+    }
+
+    const stored = sessionStorage.getItem(`trailer:${cacheKey}`);
+    if (stored !== null) {
+      const cached = stored === 'null' ? null : stored;
+      trailerCache.set(cacheKey, cached);
+      setResolvedId(cached);
+      return;
+    }
+
+    // Not cached anywhere -- fetch from our Cloudflare Function
+    setLoading(true);
+    setResolvedId(null);
+
+    const params = new URLSearchParams({ title: movieTitle });
+    if (movieYear) params.set('year', String(movieYear));
+
+    fetch(`/api/trailer?${params.toString()}`)
+      .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to fetch trailer');
+        return data;
+      })
+      .then((data: { trailerId: string | null }) => {
+        trailerCache.set(cacheKey, data.trailerId);
+        sessionStorage.setItem(`trailer:${cacheKey}`, data.trailerId ?? 'null');
+        setResolvedId(data.trailerId);
+      })
+      .catch(() => {
+        setResolvedId(null);
+      })
+      .finally(() => setLoading(false));
+  }, [isOpen, trailerId, movieTitle, movieYear]);
+
   if (!isOpen) return null;
 
-  const videoId = TRAILERS[slug];
-  const embedUrl = videoId
-    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`
-    : `https://www.youtube-nocookie.com/embed?listType=search&list=${encodeURIComponent(movieTitle + ' official trailer')}&autoplay=1`;
+  const embedUrl = resolvedId
+    ? `https://www.youtube-nocookie.com/embed/${resolvedId}?autoplay=1&rel=0`
+    : null;
 
   return (
     <AnimatePresence>
@@ -117,20 +174,58 @@ export const TrailerModal: React.FC<TrailerModalProps> = ({
 
           {/* 16:9 Aspect Ratio Iframe */}
           <div style={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
-            <iframe
-              src={embedUrl}
-              title={`${movieTitle} Trailer`}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                border: 'none'
-              }}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
+            {loading ? (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#717686',
+                  fontSize: '0.9rem'
+                }}
+              >
+                Looking for a trailer...
+              </div>
+            ) : embedUrl ? (
+              <iframe
+                src={embedUrl}
+                title={`${movieTitle} Trailer`}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: 'none'
+                }}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            ) : (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#9da2b4',
+                  fontSize: '0.95rem',
+                  textAlign: 'center',
+                  padding: '0 24px'
+                }}
+              >
+                No trailer available for this title yet.
+              </div>
+            )}
           </div>
         </motion.div>
       </div>
