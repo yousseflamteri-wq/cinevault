@@ -15,6 +15,7 @@ export interface Movie {
   featured?: boolean;
   trending?: boolean;
   popular?: boolean;
+  trailerId?: string;
 }
 
 export type MediaItem = Movie;
