@@ -8,6 +8,7 @@ import { TrailerModal } from '../components/movie/TrailerModal';
 import { WatchUnlockModal } from '../components/movie/WatchUnlockModal';
 import { DownloadOptions } from '../components/movie/DownloadOptions';
 import { MovieRow } from '../components/movie/MovieRow';
+import { CastList } from '../components/movie/CastList';
 
 export const MediaDetails = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -206,18 +207,7 @@ export const MediaDetails = () => {
               {movie.description}
             </p>
 
-            <div style={{ fontSize: '0.85rem', color: 'var(--text-muted, #717686)', marginBottom: '24px' }}>
-              {movie.director && (
-                <div style={{ marginBottom: '4px' }}>
-                  <strong style={{ color: 'var(--text-secondary, #9da2b4)' }}>Director:</strong> {movie.director}
-                </div>
-              )}
-              {movie.cast && movie.cast.length > 0 && (
-                <div>
-                  <strong style={{ color: 'var(--text-secondary, #9da2b4)' }}>Cast:</strong> {movie.cast.join(', ')}
-                </div>
-              )}
-            </div>
+            <CastList director={movie.director} cast={movie.cast} />
 
             {/* Action buttons */}
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
