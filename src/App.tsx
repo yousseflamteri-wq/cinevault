@@ -5,7 +5,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Hero } from './components/hero/Hero';
 import { MovieRow } from './components/movie/MovieRow';
 import { GenreFilter } from './components/movie/GenreFilter';
-import { MediaDetails } from './pages/MediaDetails';
+import { MediaDetails } from './pages/MediaDetails'; 
 import { NotFound } from './pages/NotFound';
 import { Stats } from './pages/Stats';
 
