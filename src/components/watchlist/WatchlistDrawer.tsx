@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useWatchlist } from '../../hooks/useWatchlist';
+import { useMovieImages } from '../../hooks/useMovieImages';
 import { StarIcon, BookmarkIcon } from '../ui/Icons';
+import type { MediaItem } from '../../types/movie';
 
 interface WatchlistDrawerProps {
   isOpen: boolean;
@@ -119,116 +121,15 @@ export const WatchlistDrawer: React.FC<WatchlistDrawerProps> = ({ isOpen, onClos
                 </div>
               ) : (
                 items.map(movie => (
-                  <div
+                  <WatchlistItem
                     key={movie.slug}
-                    style={{
-                      display: 'flex',
-                      gap: '12px',
-                      padding: '10px',
-                      borderRadius: '10px',
-                      backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                      border: '1px solid rgba(255, 255, 255, 0.06)'
+                    movie={movie}
+                    onNavigate={() => {
+                      onClose();
+                      navigate(`/movie/${movie.slug}`);
                     }}
-                  >
-                    <img
-                      src={movie.poster}
-                      alt={movie.title}
-                      style={{
-                        width: '54px',
-                        height: '76px',
-                        objectFit: 'cover',
-                        borderRadius: '6px',
-                        cursor: 'pointer'
-                      }}
-                      onClick={() => {
-                        onClose();
-                        navigate(`/movie/${movie.slug}`);
-                      }}
-                    />
-                    <div
-                      style={{
-                        flex: 1,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between'
-                      }}
-                    >
-                      <div>
-                        <h4
-                          onClick={() => {
-                            onClose();
-                            navigate(`/movie/${movie.slug}`);
-                          }}
-                          style={{
-                            margin: '0 0 4px 0',
-                            fontSize: '0.92rem',
-                            fontWeight: 600,
-                            color: '#fff',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {movie.title}
-                        </h4>
-                        <div
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px',
-                            fontSize: '0.75rem',
-                            color: '#9da2b4'
-                          }}
-                        >
-                          <span>{movie.year}</span>
-                          <span>•</span>
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: '3px',
-                              color: '#e5a93b'
-                            }}
-                          >
-                            <StarIcon size={12} />
-                            <span>{movie.rating.toFixed(1)}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
-                        <button
-                          onClick={() => {
-                            onClose();
-                            navigate(`/movie/${movie.slug}`);
-                          }}
-                          style={{
-                            backgroundColor: 'var(--accent, #e5a93b)',
-                            color: '#08090c',
-                            border: 'none',
-                            borderRadius: '6px',
-                            padding: '4px 10px',
-                            fontSize: '0.75rem',
-                            fontWeight: 700,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Watch
-                        </button>
-                        <button
-                          onClick={() => toggleWatchlist(movie.slug)}
-                          style={{
-                            backgroundColor: 'transparent',
-                            color: '#717686',
-                            border: 'none',
-                            fontSize: '0.75rem',
-                            cursor: 'pointer',
-                            textDecoration: 'underline'
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                    onRemove={() => toggleWatchlist(movie.slug)}
+                  />
                 ))
               )}
             </div>
@@ -238,3 +139,116 @@ export const WatchlistDrawer: React.FC<WatchlistDrawerProps> = ({ isOpen, onClos
     </AnimatePresence>
   );
 };
+
+interface WatchlistItemProps {
+  movie: MediaItem;
+  onNavigate: () => void;
+  onRemove: () => void;
+}
+
+function WatchlistItem({ movie, onNavigate, onRemove }: WatchlistItemProps) {
+  const { poster } = useMovieImages(movie);
+
+  return (
+    <div
+      style={{
+        display: 'flex',
+        gap: '12px',
+        padding: '10px',
+        borderRadius: '10px',
+        backgroundColor: 'rgba(255, 255, 255, 0.04)',
+        border: '1px solid rgba(255, 255, 255, 0.06)'
+      }}
+    >
+      <img
+        src={poster}
+        alt={movie.title}
+        style={{
+          width: '54px',
+          height: '76px',
+          objectFit: 'cover',
+          borderRadius: '6px',
+          cursor: 'pointer'
+        }}
+        onClick={onNavigate}
+      />
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between'
+        }}
+      >
+        <div>
+          <h4
+            onClick={onNavigate}
+            style={{
+              margin: '0 0 4px 0',
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              color: '#fff',
+              cursor: 'pointer'
+            }}
+          >
+            {movie.title}
+          </h4>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '0.75rem',
+              color: '#9da2b4'
+            }}
+          >
+            <span>{movie.year}</span>
+            <span>•</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '3px',
+                color: '#e5a93b'
+              }}
+            >
+              <StarIcon size={12} />
+              <span>{movie.rating.toFixed(1)}</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
+          <button
+            onClick={onNavigate}
+            style={{
+              backgroundColor: 'var(--accent, #e5a93b)',
+              color: '#08090c',
+              border: 'none',
+              borderRadius: '6px',
+              padding: '4px 10px',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              cursor: 'pointer'
+            }}
+          >
+            Watch
+          </button>
+          <button
+            onClick={onRemove}
+            style={{
+              backgroundColor: 'transparent',
+              color: '#717686',
+              border: 'none',
+              fontSize: '0.75rem',
+              cursor: 'pointer',
+              textDecoration: 'underline'
+            }}
+          >
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
