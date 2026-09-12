@@ -6,6 +6,8 @@ import { Hero } from './components/hero/Hero';
 import { MovieRow } from './components/movie/MovieRow';
 import { GenreFilter } from './components/movie/GenreFilter';
 import { MediaDetails } from './pages/MediaDetails';
+import { NotFound } from './pages/NotFound';
+import { Stats } from './pages/Stats';
 
 const GENRES = [
   'All',
@@ -140,6 +142,8 @@ export function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/movie/:slug" element={<MediaDetails />} />
+        <Route path="/stats" element={<Stats />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
   );
