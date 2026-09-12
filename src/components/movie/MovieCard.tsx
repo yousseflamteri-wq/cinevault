@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import type { MediaItem } from '../../types/movie';
 import { StarIcon } from '../ui/Icons';
+import { useMovieImages } from '../../hooks/useMovieImages';
 
 export const MovieCard: React.FC<{ item: MediaItem }> = ({ item }) => {
+  const { poster } = useMovieImages(item);
+
   return (
     <Link to={`/movie/${item.slug}`} style={{ display: 'block' }}>
       <motion.div
@@ -23,7 +26,7 @@ export const MovieCard: React.FC<{ item: MediaItem }> = ({ item }) => {
       >
         <div style={{ position: 'relative', width: '100%', paddingTop: '145%', overflow: 'hidden' }}>
           <img
-            src={item.poster}
+            src={poster}
             alt={item.title}
             loading="lazy"
             style={{
