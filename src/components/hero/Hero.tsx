@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import type { MediaItem } from '../../types/movie';
 import { PlayIcon, BookmarkIcon, StarIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '../ui/Icons';
 import { useWatchlist } from '../../hooks/useWatchlist';
+import { useMovieImages } from '../../hooks/useMovieImages';
 
 interface HeroProps {
   items?: MediaItem[];
@@ -23,6 +24,10 @@ export const Hero: React.FC<HeroProps> = ({ items, item }) => {
   const safeIndex = mediaList.length > 0 ? currentIndex % mediaList.length : 0;
   const currentItem = mediaList[safeIndex];
   const saved = currentItem ? inWatchlist(currentItem.slug) : false;
+
+  const { backdrop } = useMovieImages(
+    currentItem ?? { title: '', year: 0, poster: '', backdrop: '' }
+  );
 
   // Auto-slide every 5 seconds; pauses when mouse is hovering
   useEffect(() => {
@@ -70,7 +75,7 @@ export const Hero: React.FC<HeroProps> = ({ items, item }) => {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url(${currentItem.backdrop})`,
+            backgroundImage: `url(${backdrop})`,
             backgroundPosition: 'center 20%',
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
