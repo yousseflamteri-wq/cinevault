@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { getMovieBySlug, getAllMovies } from '../lib/movies';
+import { getRelatedMovies } from '../lib/related';
 import type { Movie } from '../types/movie';
 import { PlayIcon, BookmarkIcon, StarIcon, CheckIcon } from '../components/ui/Icons';
 import { useWatchlist } from '../hooks/useWatchlist';
+import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { trackEvent } from '../lib/track';
 import { TrailerModal } from '../components/movie/TrailerModal';
 import { WatchUnlockModal } from '../components/movie/WatchUnlockModal';
 import { DownloadOptions } from '../components/movie/DownloadOptions';
@@ -18,12 +21,19 @@ export const MediaDetails = () => {
   const [unlockOpen, setUnlockOpen] = useState(false);
   const { inWatchlist, toggleWatchlist } = useWatchlist();
 
+  useDocumentMeta({
+    title: movie ? `${movie.title} (${movie.year}) — CineVault` : 'CineVault',
+    description: movie?.description,
+    image: movie?.poster
+  });
+
   useEffect(() => {
     setLoading(true);
     if (slug) {
       getMovieBySlug(slug).then((data) => {
         setMovie(data || null);
         setLoading(false);
+        if (data) trackEvent('pageview', data.slug);
       });
     }
     // Scroll to top whenever the slug changes
@@ -85,9 +95,7 @@ export const MediaDetails = () => {
 
   const saved = inWatchlist(movie.slug);
 
-  const related = getAllMovies()
-    .filter(m => m.slug !== movie.slug && m.genres.some(g => movie.genres.includes(g)))
-    .slice(0, 10);
+  const related = getRelatedMovies(movie, getAllMovies());
 
   return (
     <div style={{ paddingTop: '68px' }}>
@@ -212,7 +220,10 @@ export const MediaDetails = () => {
             {/* Action buttons */}
             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
               <button
-                onClick={() => setUnlockOpen(true)}
+                onClick={() => {
+                  trackEvent('watch_now', movie.slug);
+                  setUnlockOpen(true);
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -232,7 +243,10 @@ export const MediaDetails = () => {
               </button>
 
               <button
-                onClick={() => setTrailerOpen(true)}
+                onClick={() => {
+                  trackEvent('trailer', movie.slug);
+                  setTrailerOpen(true);
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -252,7 +266,10 @@ export const MediaDetails = () => {
               </button>
 
               <button
-                onClick={() => toggleWatchlist(movie.slug)}
+                onClick={() => {
+                  if (!saved) trackEvent('add_to_list', movie.slug);
+                  toggleWatchlist(movie.slug);
+                }}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
