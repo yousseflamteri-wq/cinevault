@@ -6,6 +6,7 @@ import type { Movie } from '../types/movie';
 import { PlayIcon, BookmarkIcon, StarIcon, CheckIcon } from '../components/ui/Icons';
 import { useWatchlist } from '../hooks/useWatchlist';
 import { useDocumentMeta } from '../hooks/useDocumentMeta';
+import { useMovieImages } from '../hooks/useMovieImages';
 import { trackEvent } from '../lib/track';
 import { TrailerModal } from '../components/movie/TrailerModal';
 import { WatchUnlockModal } from '../components/movie/WatchUnlockModal';
@@ -26,6 +27,10 @@ export const MediaDetails = () => {
     description: movie?.description,
     image: movie?.poster
   });
+
+  const { poster, backdrop } = useMovieImages(
+    movie ?? { title: '', year: 0, poster: '', backdrop: '' }
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -113,7 +118,7 @@ export const MediaDetails = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundImage: `url(${movie.backdrop || movie.poster})`,
+            backgroundImage: `url(${backdrop || poster})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -149,7 +154,7 @@ export const MediaDetails = () => {
         >
           {/* Poster */}
           <img
-            src={movie.poster}
+            src={poster}
             alt={movie.title}
             style={{
               width: '200px',
