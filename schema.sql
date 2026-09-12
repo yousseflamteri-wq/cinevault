@@ -21,3 +21,15 @@ CREATE TABLE movies (
 );
 
 CREATE INDEX IF NOT EXISTS idx_movies_slug ON movies(slug);
+
+-- Lightweight click/interaction tracking. Kept separate from `movies` so
+-- re-running the movies table setup never touches this data.
+CREATE TABLE IF NOT EXISTS events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  event_type TEXT NOT NULL,     -- 'watch_now' | 'trailer' | 'add_to_list' | 'pageview'
+  movie_slug TEXT,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_events_type ON events(event_type);
+CREATE INDEX IF NOT EXISTS idx_events_slug ON events(movie_slug);
