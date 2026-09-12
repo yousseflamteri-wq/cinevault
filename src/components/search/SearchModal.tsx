@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { getAllMovies } from '../../lib/movies';
 import type { MediaItem } from '../../types/movie';
 import { SearchIcon, StarIcon } from '../ui/Icons';
+import { useMovieImages } from '../../hooks/useMovieImages';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -146,42 +147,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
             )}
 
             {results.map(item => (
-              <div
+              <SearchResultRow
                 key={item.slug}
-                onClick={() => {
+                item={item}
+                onSelect={() => {
                   onClose();
                   navigate(`/movie/${item.slug}`);
                 }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '14px',
-                  padding: '10px 12px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s ease'
-                }}
-                onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)')}
-                onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
-              >
-                <img
-                  src={item.poster}
-                  alt={item.title}
-                  style={{ width: '42px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
-                />
-                <div style={{ flex: 1 }}>
-                  <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', margin: 0 }}>{item.title}</h4>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '4px' }}>
-                    <span style={{ fontSize: '0.75rem', color: '#717686' }}>{item.year}</span>
-                    <span style={{ fontSize: '0.75rem', color: '#717686' }}>•</span>
-                    <span style={{ fontSize: '0.75rem', color: '#717686' }}>{item.genres.slice(0, 2).join(', ')}</span>
-                  </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#e5a93b', fontSize: '0.85rem' }}>
-                  <StarIcon size={14} />
-                  <span>{item.rating.toFixed(1)}</span>
-                </div>
-              </div>
+              />
             ))}
           </div>
         </motion.div>
@@ -189,3 +162,47 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     </AnimatePresence>
   );
 };
+
+interface SearchResultRowProps {
+  item: MediaItem;
+  onSelect: () => void;
+}
+
+function SearchResultRow({ item, onSelect }: SearchResultRowProps) {
+  const { poster } = useMovieImages(item);
+
+  return (
+    <div
+      onClick={onSelect}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '14px',
+        padding: '10px 12px',
+        borderRadius: '8px',
+        cursor: 'pointer',
+        transition: 'background 0.2s ease'
+      }}
+      onMouseEnter={e => (e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)')}
+      onMouseLeave={e => (e.currentTarget.style.backgroundColor = 'transparent')}
+    >
+      <img
+        src={poster}
+        alt={item.title}
+        style={{ width: '42px', height: '60px', objectFit: 'cover', borderRadius: '4px' }}
+      />
+      <div style={{ flex: 1 }}>
+        <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', margin: 0 }}>{item.title}</h4>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '4px' }}>
+          <span style={{ fontSize: '0.75rem', color: '#717686' }}>{item.year}</span>
+          <span style={{ fontSize: '0.75rem', color: '#717686' }}>•</span>
+          <span style={{ fontSize: '0.75rem', color: '#717686' }}>{item.genres.slice(0, 2).join(', ')}</span>
+        </div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#e5a93b', fontSize: '0.85rem' }}>
+        <StarIcon size={14} />
+        <span>{item.rating.toFixed(1)}</span>
+      </div>
+    </div>
+  );
+}
