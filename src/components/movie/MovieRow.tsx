@@ -87,7 +87,7 @@ export const MovieRow: React.FC<MovieRowProps> = ({ title, items, subtitle }) =>
         className="no-scrollbar"
         style={{
           display: 'flex',
-          gap: '20px',
+          gap: '12px', // نقصنا الفراغ هنا باش يقدو 3
           overflowX: 'auto',
           scrollSnapType: 'x mandatory',
           paddingLeft: 'clamp(16px, 4vw, 48px)',
@@ -100,7 +100,7 @@ export const MovieRow: React.FC<MovieRowProps> = ({ title, items, subtitle }) =>
             key={item.slug}
             style={{
               flex: '0 0 auto',
-              width: 'clamp(170px, 18vw, 220px)',
+              width: 'clamp(110px, 28vw, 220px)', // صغرنا العرض الأدنى لـ 110px باش يبانو 3 فالتليفون
               scrollSnapAlign: 'start'
             }}
           >
