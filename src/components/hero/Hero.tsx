@@ -140,7 +140,7 @@ export const Hero: React.FC<HeroProps> = ({ items, item }) => {
 
             <h1
               style={{
-                fontSize: 'clamp(2.4rem, 5vw, 4rem)',
+                fontSize: 'clamp(2rem, 4.2vw, 3.4rem)',
                 fontWeight: 800,
                 lineHeight: 1.1,
                 letterSpacing: '-0.02em',
