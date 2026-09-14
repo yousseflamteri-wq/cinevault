@@ -59,7 +59,7 @@ export const onRequestGet = async (context: EventContext): Promise<Response> => 
     const match = data.results?.[0];
 
     const poster = match?.poster_path
-      ? `https://image.tmdb.org/t/p/w500${match.poster_path}`
+      ? `https://image.tmdb.org/t/p/w342${match.poster_path}`
       : null;
     const backdrop = match?.backdrop_path
       ? `https://image.tmdb.org/t/p/w1280${match.backdrop_path}`
