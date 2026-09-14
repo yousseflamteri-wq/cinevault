@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import type { MediaItem } from '../../types/movie';
-import { PlayIcon, BookmarkIcon, StarIcon, CheckIcon, ChevronLeftIcon, ChevronRightIcon } from '../ui/Icons';
+import { PlayIcon, BookmarkIcon, StarIcon, CheckIcon } from '../ui/Icons';
 import { useWatchlist } from '../../hooks/useWatchlist';
 import { useMovieImages } from '../../hooks/useMovieImages';
 
@@ -40,14 +40,6 @@ export const Hero: React.FC<HeroProps> = ({ items, item }) => {
     return () => clearInterval(timer);
   }, [isPaused, mediaList.length]);
 
-  const handlePrev = () => {
-    setCurrentIndex(prev => (prev === 0 ? mediaList.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentIndex(prev => (prev + 1) % mediaList.length);
-  };
-
   if (!currentItem) return null;
 
   return (
@@ -57,8 +49,8 @@ export const Hero: React.FC<HeroProps> = ({ items, item }) => {
       style={{
         position: 'relative',
         width: '100%',
-        minHeight: '80vh',
-        height: 'clamp(540px, 80vh, 740px)',
+        minHeight: 'clamp(420px, 62vh, 740px)',
+        height: 'clamp(420px, 62vh, 740px)',
         display: 'flex',
         alignItems: 'center',
         overflow: 'hidden'
@@ -234,79 +226,6 @@ export const Hero: React.FC<HeroProps> = ({ items, item }) => {
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Manual Slide Arrows and Indicators */}
-      {mediaList.length > 1 && (
-        <div
-          style={{
-            position: 'absolute',
-            right: 'clamp(16px, 4vw, 48px)',
-            bottom: '40px',
-            zIndex: 10,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}
-        >
-          <button
-            onClick={handlePrev}
-            aria-label="Previous slide"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.12)',
-              backdropFilter: 'blur(8px)',
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              border: '1px solid rgba(255,255,255,0.1)'
-            }}
-          >
-            <ChevronLeftIcon size={20} />
-          </button>
-
-          <div style={{ display: 'flex', gap: '6px' }}>
-            {mediaList.map((m, idx) => (
-              <button
-                key={m.slug}
-                onClick={() => setCurrentIndex(idx)}
-                aria-label={`Go to slide ${idx + 1}`}
-                style={{
-                  width: idx === safeIndex ? '24px' : '8px',
-                  height: '8px',
-                  borderRadius: 'var(--radius-full)',
-                  backgroundColor: idx === safeIndex ? 'var(--accent)' : 'rgba(255, 255, 255, 0.3)',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }}
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={handleNext}
-            aria-label="Next slide"
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-              backgroundColor: 'rgba(255, 255, 255, 0.12)',
-              backdropFilter: 'blur(8px)',
-              color: '#fff',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              border: '1px solid rgba(255,255,255,0.1)'
-            }}
-          >
-            <ChevronRightIcon size={20} />
-          </button>
-        </div>
-      )}
     </section>
   );
 };
