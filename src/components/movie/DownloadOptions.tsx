@@ -41,29 +41,29 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({
       style={{
         backgroundColor: 'rgba(18, 20, 26, 0.75)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '16px',
-        padding: '24px',
-        marginTop: '32px',
+        borderRadius: '14px',
+        padding: '16px',
+        marginTop: '20px',
         backdropFilter: 'blur(12px)'
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '18px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
         <div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#fff', margin: '0 0 4px 0' }}>
+          <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#fff', margin: '0 0 3px 0' }}>
             Direct High-Speed Mirrors
         </h3>
            <p
-           style={{ fontSize: '0.85rem', color: 'var(--text-secondary, #9da2b4)', margin: 0 }}>
+           style={{ fontSize: '0.78rem', color: 'var(--text-secondary, #9da2b4)', margin: 0 }}>
   Encrypted, uncapped CDN downloads for {movieTitle}.
            </p>
         </div>
         <span
           style={{
-            fontSize: '0.75rem',
+            fontSize: '0.7rem',
             fontWeight: 700,
             color: '#22c55e',
             backgroundColor: 'rgba(34, 197, 94, 0.12)',
-            padding: '6px 12px',
+            padding: '4px 10px',
             borderRadius: '999px',
             border: '1px solid rgba(34, 197, 94, 0.3)'
           }}
@@ -72,7 +72,7 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({
         </span>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {downloadTiers.map(tier => (
           <div
             key={tier.quality}
@@ -80,29 +80,30 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '14px 18px',
+              padding: '10px 12px',
               backgroundColor: 'rgba(255, 255, 255, 0.03)',
               border: '1px solid rgba(255, 255, 255, 0.06)',
               borderRadius: '10px',
               flexWrap: 'wrap',
-              gap: '12px',
+              gap: '10px',
               transition: 'border-color 0.2s ease'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div
                 style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '8px',
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '7px',
                   backgroundColor: 'rgba(229, 169, 59, 0.12)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: 'var(--accent, #e5a93b)'
+                  color: 'var(--accent, #e5a93b)',
+                  flexShrink: 0
                 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                   <polyline points="7 10 12 15 17 10" />
                   <line x1="12" y1="15" x2="12" y2="3" />
@@ -110,17 +111,17 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({
               </div>
 
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>
                     {tier.quality}
                   </span>
                   <span
                     style={{
-                      fontSize: '0.65rem',
+                      fontSize: '0.6rem',
                       fontWeight: 800,
                       textTransform: 'uppercase',
                       backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                      padding: '2px 8px',
+                      padding: '1px 6px',
                       borderRadius: '4px',
                       color: 'var(--text-secondary, #9da2b4)'
                     }}
@@ -128,14 +129,14 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({
                     {tier.badge}
                   </span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#717686', marginTop: '3px' }}>
+                <div style={{ fontSize: '0.7rem', color: '#717686', marginTop: '2px' }}>
                   {tier.resolution} • {tier.format} • {tier.audio}
                 </div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginLeft: 'auto' }}>
-              <span style={{ fontSize: '0.9rem', fontWeight: 700, color: '#9da2b4' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: 'auto' }}>
+              <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#9da2b4' }}>
                 {tier.size}
               </span>
               <button
@@ -144,9 +145,9 @@ export const DownloadOptions: React.FC<DownloadOptionsProps> = ({
                   backgroundColor: 'var(--accent, #e5a93b)',
                   color: '#08090c',
                   border: 'none',
-                  borderRadius: '8px',
-                  padding: '8px 18px',
-                  fontSize: '0.85rem',
+                  borderRadius: '7px',
+                  padding: '6px 14px',
+                  fontSize: '0.78rem',
                   fontWeight: 700,
                   cursor: 'pointer',
                   display: 'flex',
