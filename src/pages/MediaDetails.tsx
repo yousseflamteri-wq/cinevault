@@ -20,6 +20,7 @@ export const MediaDetails = () => {
   const [loading, setLoading] = useState(true);
   const [trailerOpen, setTrailerOpen] = useState(false);
   const [unlockOpen, setUnlockOpen] = useState(false);
+  const [showDownloads, setShowDownloads] = useState(false);
   const { inWatchlist, toggleWatchlist } = useWatchlist();
 
   useDocumentMeta({
@@ -109,7 +110,7 @@ export const MediaDetails = () => {
         style={{
           position: 'relative',
           width: '100%',
-          minHeight: '60vh',
+          minHeight: 'clamp(320px, 42vh, 560px)',
           display: 'flex',
           alignItems: 'flex-end'
         }}
@@ -157,8 +158,8 @@ export const MediaDetails = () => {
             src={poster}
             alt={movie.title}
             style={{
-              width: '200px',
-              minWidth: '160px',
+              width: 'clamp(110px, 28vw, 200px)',
+              flexShrink: 0,
               borderRadius: '12px',
               boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
               border: '1px solid rgba(255,255,255,0.1)'
@@ -292,15 +293,43 @@ export const MediaDetails = () => {
                 {saved ? <CheckIcon size={16} /> : <BookmarkIcon size={16} />}
                 {saved ? 'In My List' : 'Add to List'}
               </button>
+
+              <button
+                onClick={() => setShowDownloads(prev => !prev)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  backgroundColor: showDownloads ? 'rgba(229,169,59,0.12)' : 'rgba(255,255,255,0.08)',
+                  color: showDownloads ? 'var(--accent, #e5a93b)' : '#fff',
+                  border: showDownloads
+                    ? '1px solid rgba(229,169,59,0.4)'
+                    : '1px solid rgba(255,255,255,0.15)',
+                  borderRadius: '8px',
+                  padding: '12px 24px',
+                  fontSize: '0.95rem',
+                  fontWeight: 700,
+                  cursor: 'pointer'
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                {showDownloads ? 'Hide Downloads' : 'Download'}
+              </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Download options */}
-      <div className="site-container" style={{ padding: '0 clamp(16px, 4vw, 48px)' }}>
-        <DownloadOptions movieTitle={movie.title} onSelectDownload={() => setUnlockOpen(true)} />
-      </div>
+      {/* Download options -- only shown once the Download button is clicked */}
+      {showDownloads && (
+        <div className="site-container" style={{ padding: '0 clamp(16px, 4vw, 48px)' }}>
+          <DownloadOptions movieTitle={movie.title} onSelectDownload={() => setUnlockOpen(true)} />
+        </div>
+      )}
 
       {/* Related titles */}
       {related.length > 0 && (
