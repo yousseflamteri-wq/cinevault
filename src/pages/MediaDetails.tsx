@@ -180,7 +180,7 @@ export const MediaDetails = () => {
 
             <h1
               style={{
-                fontSize: 'clamp(1.8rem, 4vw, 3rem)',
+                fontSize: 'clamp(1.6rem, 3.4vw, 2.6rem)',
                 fontWeight: 900,
                 color: '#fff',
                 margin: '0 0 14px 0',
