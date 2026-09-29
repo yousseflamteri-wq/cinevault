@@ -1,0 +1,17 @@
+{
+  "slug": "jumanji-open-world",
+  "title": "Jumanji: Open World",
+  "type": "movie",
+  "year": 2026,
+  "poster": "/images/posters/jumanji-open-world.jpg",
+  "backdrop": "/images/backdrops/jumanji-open-world.jpg",
+  "description": "Spencer, Fridge, Bethany and Martha have dealt the perilous obstacles of Jumanji before, but this time Jumanji is out of the console, unleashing its chaos into our world.",
+  "genres": ["Action", "Adventure", "Comedy", "Fantasy"],
+  "rating": 7.6,
+  "runtime": 0,
+  "director": "Jake Kasdan",
+  "cast": ["Dwayne Johnson", "Kevin Hart", "Jack Black", "Karen Gillan"],
+  "featured": false,
+  "trending": true,
+  "popular": true
+}
