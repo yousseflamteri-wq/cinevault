@@ -1,0 +1,17 @@
+{
+  "slug": "the-hunger-games-sunrise-on-the-reaping",
+  "title": "The Hunger Games: Sunrise on the Reaping",
+  "type": "movie",
+  "year": 2026,
+  "poster": "/images/posters/the-hunger-games-sunrise-on-the-reaping.jpg",
+  "backdrop": "/images/backdrops/the-hunger-games-sunrise-on-the-reaping.jpg",
+  "description": "The Hunger Games: Sunrise on the Reaping will revisit the world of Panem twenty-four years before the events of The Hunger Games, starting on the morning of the reaping of the Fiftieth Hunger Games, also known as the Second Quarter Quell.",
+  "genres": ["Action", "Adventure", "Sci-Fi"],
+  "rating": 8.8,
+  "runtime": 150,
+  "director": "Francis Lawrence",
+  "cast": ["Joseph Zada", "Jesse Plemons", "Whitney Peak"],
+  "featured": false,
+  "trending": true,
+  "popular": true
+}
